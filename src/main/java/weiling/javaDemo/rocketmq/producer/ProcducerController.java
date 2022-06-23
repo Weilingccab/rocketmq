@@ -21,6 +21,8 @@ public class ProcducerController {
             StringBuffer con = new StringBuffer(content);
             con.append(i);
             SendResult sendResult = producerService.syncSend(topic, tag, con.toString());
+            System.out.printf("Product：发送状态=%s, 存储queue=%s ,i=%s\n", sendResult.getSendStatus(),
+                    sendResult.getMessageQueue().getQueueId(), i);
 //            System.out.println(Calendar.getInstance().getTime()+"syncSend call success：" + sendResult);
         }
 //        System.out.println("3 syncSend ： end");
@@ -82,13 +84,16 @@ public class ProcducerController {
     }
 
 
+    /*發送時，確保相同key的會進同一個queue*/
     @RequestMapping(value = "/syncSendOrderly/{topic}/{tag}/{content}", method = RequestMethod.GET)
     public void syncSendOrderly(@PathVariable("topic") String topic, @PathVariable("tag") String tag, @PathVariable("content") String content) throws InterruptedException {
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 20; i++) {
             StringBuffer con = new StringBuffer(content);
             con.append(i);
-            SendResult sendResult= producerService.syncSendOrderly(topic,tag,con.toString(),String.valueOf(i));
-//            System.out.println("syncSendOrderly call success" + sendResult);
+            int key = i % 10;
+            SendResult sendResult= producerService.syncSendOrderly(topic,tag,con.toString(),String.valueOf(key));
+            System.out.printf("Product：发送状态=%s, 存储queue=%s ,i=%s, key=%s\n", sendResult.getSendStatus(),
+                    sendResult.getMessageQueue().getQueueId(), i, key);
 
         }
         System.out.println("3 syncSendOrderly ： end");
