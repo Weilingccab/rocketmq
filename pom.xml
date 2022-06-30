@@ -42,6 +42,48 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<!--使用docker-maven-plugin外掛-->
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>1.2.2</version>
+				<!--將外掛繫結在某個phase執行-->
+				<executions>
+					<execution>
+						<id>build-image</id>
+						<!--使用者只需執行mvn package ，就會自動執行mvn docker:build-->
+						<phase>package</phase>
+						<goals>
+							<goal>build</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<!--指定生成的映象名-->
+					<imageName>producer-app</imageName>
+					<!--指定標籤-->
+					<imageTags>
+						<imageTag>latest</imageTag>
+					</imageTags>
+					<!--指定基礎映象jdk1.8-->
+					<baseImage>java</baseImage>
+					<!--映象製作人本人資訊-->
+					<!--切換到ROOT目錄-->
+					<workdir>/Documents/images</workdir>
+					<cmd>["java", "-version"]</cmd>
+					<entryPoint>["java", "-jar", "producer.jar"]</entryPoint>
+					<!-- 這裡是複製 jar 包到 docker 容器指定目錄配置 -->
+					<resources>
+						<resource>
+							<targetPath>/target/</targetPath>
+							<!--jar 包所在的路徑  此處配置的 即對應 target 目錄-->
+							<directory>${project.build.directory}</directory>
+							<!--用於指定需要複製的檔案 需要包含的 jar包 ，這裡對應的是 Dockerfile中新增的檔名 -->
+							<include>${project.build.finalName}.jar</include>
+						</resource>
+					</resources>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
