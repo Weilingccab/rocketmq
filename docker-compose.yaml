@@ -1,0 +1,19 @@
+version: '3'
+
+
+networks:
+    mqNetwork:
+      external: true
+
+services: 
+  producer:
+    image: producer-app
+    container_name: producer
+    ports:
+      - 8082:8082
+    networks: 
+      - mqNetwork
+    environment:
+      ROCKETMQ.NAMESERVER.IP: mqNamesrv
+
+  
