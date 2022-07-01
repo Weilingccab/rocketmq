@@ -41,6 +41,20 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<finalName>producer</finalName>
+				</configuration>
+
+
+			</plugin>
+			<!-- 跳過單元測試 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<skipTests>true</skipTests>
+				</configuration>
+
 			</plugin>
 			<!--使用docker-maven-plugin外掛-->
 			<plugin>
@@ -58,7 +72,9 @@
 						</goals>
 					</execution>
 				</executions>
+
 				<configuration>
+
 					<!--指定生成的映象名-->
 					<imageName>producer-app</imageName>
 					<!--指定標籤-->
@@ -66,20 +82,16 @@
 						<imageTag>latest</imageTag>
 					</imageTags>
 					<!--指定基礎映象jdk1.8-->
-					<baseImage>java</baseImage>
-					<!--映象製作人本人資訊-->
-					<!--切換到ROOT目錄-->
-					<workdir>/Documents/images</workdir>
+					<baseImage>openjdk:11</baseImage>
 					<cmd>["java", "-version"]</cmd>
-					<entryPoint>["java", "-jar", "producer.jar"]</entryPoint>
-					<!-- 這裡是複製 jar 包到 docker 容器指定目錄配置 -->
+					<entryPoint>["java", "-jar", "/producer.jar"]</entryPoint>
 					<resources>
 						<resource>
-							<targetPath>/target/</targetPath>
+							<targetPath>/</targetPath>
 							<!--jar 包所在的路徑  此處配置的 即對應 target 目錄-->
 							<directory>${project.build.directory}</directory>
 							<!--用於指定需要複製的檔案 需要包含的 jar包 ，這裡對應的是 Dockerfile中新增的檔名 -->
-							<include>${project.build.finalName}.jar</include>
+							<include>producer.jar</include>
 						</resource>
 					</resources>
 				</configuration>

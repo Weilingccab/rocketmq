@@ -1,6 +1,6 @@
 server:
-  port: 8081
+  port: 8082
 rocketmq:
-  name-server: 127.0.0.1:9876
+  name-server: ${ROCKETMQ.NAMESERVER.IP}:9876
   producer:
     group: producer-demo1
